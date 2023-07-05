@@ -13,7 +13,7 @@ class _CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
 
   @override
   void addPointer(PointerEvent event) {
-    if (onPanDown(event.position)) {
+    if (onPanDown(event.localPosition)) {
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
     } else {
@@ -24,10 +24,10 @@ class _CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   void handleEvent(PointerEvent event) {
     if (event is PointerMoveEvent) {
-      onPanUpdate(event.position);
+      onPanUpdate(event.localPosition);
     }
     if (event is PointerUpEvent) {
-      onPanEnd(event.position);
+      onPanEnd(event.localPosition);
       stopTrackingPointer(event.pointer);
     }
   }
