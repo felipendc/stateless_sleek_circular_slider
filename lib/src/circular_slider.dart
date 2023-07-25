@@ -1,5 +1,7 @@
 library circular_slider;
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -49,7 +51,21 @@ class SleekCircularSlider extends StatelessWidget {
   void _handlePan(Offset position, Offset center, double radius) {
     final double touchWidth = appearance.progressBarWidth >= 25.0 ? appearance.progressBarWidth : 25.0;
     if (isPointAlongCircle(position, center, radius, touchWidth)) {
-      final _selectedAngle = coordinatesToRadians(center, position);
+      var _selectedAngle = coordinatesToRadians(center, position);
+
+      if (appearance.customDivisions != null) {
+        _selectedAngle = _selectedAngle - (_startAngle * math.pi / 180);
+        print("Selected angle: ${_selectedAngle}");
+        final divisions = appearance.customDivisions!.divisions ?? 5;
+        final step = (_angleRange * math.pi / 180.0) / (divisions - 1);
+        // -math.pi / 2
+
+        // NOTE: Angle range is degrees
+        // Round selected angle to nearest ratio of step
+        // + 1.5 -math.pi / 2
+        _selectedAngle = ((_selectedAngle / step).floor() * step).clamp(0, _angleRange) + (_startAngle * math.pi / 180);
+      }
+
       _updateOnChange(_selectedAngle);
     }
   }

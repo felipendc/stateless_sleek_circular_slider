@@ -39,7 +39,7 @@ class _CurvePainter extends CustomPainter {
         ..strokeWidth = appearance.trackWidth
         ..color = appearance.trackColor;
     }
-    drawCircularArc(
+    _drawCircularArc(
       canvas: canvas,
       size: size,
       paint: trackPaint,
@@ -47,7 +47,7 @@ class _CurvePainter extends CustomPainter {
     );
 
     if (!appearance.hideShadow) {
-      drawShadow(canvas: canvas, size: size);
+      _drawShadow(canvas: canvas, size: size);
     }
 
     final currentAngle = appearance.counterClockwise ? -angle : angle;
@@ -91,7 +91,30 @@ class _CurvePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = appearance.progressBarWidth;
-    drawCircularArc(canvas: canvas, size: size, paint: progressBarPaint);
+    _drawCircularArc(canvas: canvas, size: size, paint: progressBarPaint);
+
+
+    // Draw divisions
+    if (appearance.customDivisions != null) {
+      final bgPaint = Paint()
+        ..color = appearance.customColors?.divisionBackgroundColor ?? appearance.trackColor
+        ..style = PaintingStyle.fill;
+      final fgPaint = Paint()
+        ..color = appearance.customColors?.divisionForegroundColor ?? appearance.trackColor
+        ..style = PaintingStyle.fill;
+      final divisions = appearance.customDivisions!.divisions ?? 5;
+      final startSize = appearance.customDivisions!.startSize ?? appearance.trackWidth + 2;
+      final endSize = appearance.customDivisions!.endSize ?? appearance.trackWidth + 4;
+      final step = angleRange / (divisions - 1);
+      for (int i = 0; i < divisions; i++) {
+        Offset c = degreesToCoordinates(center!, -math.pi / 2 + startAngle + (step * i) + 1.5, radius);
+        canvas.drawCircle(
+          c,
+          lerpDouble(startSize, endSize, (i / divisions))!,
+          (step * i >= currentAngle) ? bgPaint : fgPaint,
+        );
+      }
+    }
 
     final dotFillPaint = Paint()..color = appearance.dotFillColor;
 
@@ -107,7 +130,7 @@ class _CurvePainter extends CustomPainter {
     }
   }
 
-  drawCircularArc(
+  void _drawCircularArc(
       {required Canvas canvas,
       required Size size,
       required Paint paint,
@@ -120,7 +143,7 @@ class _CurvePainter extends CustomPainter {
         degreeToRadians(spinnerMode ? 360 : range + currentAngle), false, paint);
   }
 
-  drawShadow({required Canvas canvas, required Size size}) {
+  void _drawShadow({required Canvas canvas, required Size size}) {
     final shadowStep = appearance.shadowStep != null
         ? appearance.shadowStep!
         : math.max(1, (appearance.shadowWidth - appearance.progressBarWidth) ~/ 10);
@@ -133,7 +156,7 @@ class _CurvePainter extends CustomPainter {
     for (int i = 1; i <= repetitions; i++) {
       shadowPaint.strokeWidth = appearance.progressBarWidth + i * shadowStep;
       shadowPaint.color = appearance.shadowColor.withOpacity(maxOpacity - (opacityStep * (i - 1)));
-      drawCircularArc(canvas: canvas, size: size, paint: shadowPaint);
+      _drawCircularArc(canvas: canvas, size: size, paint: shadowPaint);
     }
   }
 
