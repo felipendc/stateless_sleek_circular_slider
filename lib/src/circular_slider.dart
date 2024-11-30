@@ -55,7 +55,6 @@ class SleekCircularSlider extends StatelessWidget {
 
       if (appearance.customDivisions != null) {
         _selectedAngle = _selectedAngle - (_startAngle * math.pi / 180);
-        print("Selected angle: ${_selectedAngle}");
         final divisions = appearance.customDivisions!.divisions ?? 5;
         final step = (_angleRange * math.pi / 180.0) / (divisions - 1);
         // -math.pi / 2
