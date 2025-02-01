@@ -30,7 +30,7 @@ Add
 dependencies:
   sleek_circular_slider:
     git:
-      url: https://github.com/felipendc/stateless_sleek_circular_slider.git
+      url: https://github.com/felipendc/vicyos_music_stateless_sleek_circular_slider_flutter.git
       ref: master
 
 ```
