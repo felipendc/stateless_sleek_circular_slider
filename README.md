@@ -27,7 +27,11 @@ Add
 
 ```bash
 
-sleek_circular_slider : ^lastest_version
+dependencies:
+  sleek_circular_slider:
+    git:
+      url: https://github.com/felipendc/stateless_sleek_circular_slider.git
+      ref: master
 
 ```
 
